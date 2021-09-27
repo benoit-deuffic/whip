@@ -65,6 +65,7 @@ class WhipController extends AbstractController
         $user = $userRepo->findOneBy([ 'id'=> $id]);
 
         $form = $this->createForm(RegistrationFormType::class, $user);
+        //$form->setData($user);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password,
