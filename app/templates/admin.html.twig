@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body%}
+<table>
+    <thead>
+     <tr>
+         <td>Id</td>
+         <td>Nom</td>
+         <td>Prenom</td>
+         <td>Mot de passe</td>
+         <td>Email</td>
+         <td>Login</td>
+         <td>Role</td>
+         <td>Statut</td>
+         <td>Actions</td>
+     </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>
+                {{ user.id }}
+            </td>
+            <td>
+                {{ user.name }}
+            </td>
+            <td>
+                {{ user.lastname }}
+            </td>
+            <td>
+                -
+            </td>
+            <td>
+                {{ user.email }}
+            </td>
+            <td>
+                {{ user.login }}
+            </td>
+            <td>
+                {{ user.roles.role }}
+            </td>
+            <td>
+               <select name="roles" id="roles" onchange="updateStatus( {{ user.id }} , this.value )">
+                   {%  for roles in select_roles %}
+                       {%  if user.role == roles.text %}
+                          <option value="{{ roles.value }}" selected="selected">{{ roles.text }}</option>
+                       {% else %}
+                           <option value="{{ roles.value }}">{{ roles.text }}</option>
+                       {% endif %}
+                   {% endfor %}
+                   <span id="current_role">{{ user.roles.role }}</span>
+               </select>
+               <span id="status_response"></span>
+            </td>
+            <td>
+                <a href="/user/update?{{ user.id}}">Update user</a>
+            </td>
+        </tr>
+    {%  endfor %}
+    </tbody>
+</table>
+<script>
+
+    function updateStatus (id, value) {
+
+        $.ajax({
+            url: "/user/update_status",
+            data: JSON.stringify({ "id": id, "value": value }),
+            contentType: "application/json; charset=utf-8",
+            dataType:"json",
+            type: "post",
+            success: function(data){
+                $('#status_response').append(data);
+            },
+            error : function(data){
+                $('#status_response').append(data);
+            }
+        });
+    }
+
+
+</script>
+{% endblock %}
